@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block base %}
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">API Test Platform</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Settings</a></li>
+            <li><a href="/logout/">Logout</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/APIProject/"><i class="glyphicon glyphicon-th-large" style="margin-right:10px"></i>Projects <span class="sr-only">(current)</span></a></li>
+            <li><a href="/module/"><i class="glyphicon glyphicon-th" style="margin-right:10px"></i>Modules</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href=""><i class="glyphicon glyphicon-th-list" style="margin-right:10px"></i>Test Cases</a></li>
+            <li><a href=""><i class="glyphicon glyphicon-list-alt" style="margin-right:10px"></i>Tasks</a></li>
+
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href=""><i class="glyphicon glyphicon-blackboard" style="margin-right:10px"></i>Mock Server</a></li>
+            <li><a href=""><i class="glyphicon glyphicon-briefcase" style="margin-right:10px"></i>Testing tools</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+          {% if type == "list" %}
+          <h2 class="sub-header">Projects Overview
+            <button type="button" onclick="location.href='/APIProject/add_project/'" class="btn btn-sm btn-primary" style="float:right">Add a New Project</button>
+          </h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>Project Name</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Time Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for project in APIProjects %}
+                <tr>
+                  <td>{{project.id}}</td>
+                  <td>{{project.name}}</td>
+                  <td>{{project.describe}}</td>
+                  <td>
+                    {% if project.status == True %}
+                      <span>Open</span>
+                    {% else %}
+                      <span>Close</span>
+                    {% endif %}
+                  </td>
+                  <td>{{project.create_time}}</td>
+                  <td>
+                    <a href="/APIProject/edit_project/{{project.id}}/"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a style="margin-left:20px" href="/APIProject/delete_project/"><i class="glyphicon glyphicon-trash"></i></a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+
+          {% if type == "add" %}
+          <h2 class="sub-header">Add Project</h2>
+          <form method="post" action="/APIProject/add_project/">
+            <div class="form-group">
+              <label>Project Name</label>
+              <input type="text" style="width:50%" class="form-control" name="project_name" placeholder="Project Name">
+              <span style="color:red">{{ name_error }}</span>
+            </div>
+            <div>
+              <label>Project Description</label>
+              <textarea style="width:50%" class="form-control" name="project_description" rows="3"></textarea>
+            </div>
+            <div style="margin-top:15px">
+              <label>Project Status</label>
+              <div>
+              <label class="radio-inline">
+              <input type="radio" name="project_status" value="1"> Open
+              </label>
+              <label style="margin-left:30px" class="radio-inline">
+              <input type="radio" name="project_status" value="0"> Close
+              </label>
+              </div>
+            </div>
+            <div style="margin-top:15px">
+              <button class="btn btn-primary">Save Project</button>
+            </div>
+          </form>
+          {% endif %}
+
+          {% if type == "edit" %}
+          <h2 class="sub-header">Edit Project</h2>
+          <form action="/APIProject/edit_project/{{id}}/" method="post">
+            {{form.as_p}}
+            <button class="btn btn-primary">Save Project</button>
+          </form>
+          {% endif %}
+
+
+        </div>
+      </div>
+    </div>
+{% endblock %}
